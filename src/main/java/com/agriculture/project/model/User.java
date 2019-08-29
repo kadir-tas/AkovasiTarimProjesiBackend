@@ -22,7 +22,7 @@ public class User implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
-
+    //I didn't use @Data. Because lombok causes infinite loop for authentication.
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;

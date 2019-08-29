@@ -17,13 +17,16 @@ public class FarmDrawData implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long farmDrawDataId;
 
-    //    @Column(columnDefinition="VARCHAR")
+    @Lob
+    @Column(length = 512)
     private String farmOutlineShape;
 
-    //    @Column(columnDefinition="VARCHAR")
+    @Lob
+    @Column(length = 512)
     private String moduleDrawData;
 
-    //    @Column(columnDefinition="VARCHAR")
+    @Lob
+    @Column(length = 512)
     private String productDrawData;
 
     @OneToOne(fetch = FetchType.LAZY)
