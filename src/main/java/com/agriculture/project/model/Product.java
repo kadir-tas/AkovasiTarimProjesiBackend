@@ -22,6 +22,7 @@ public class Product implements Serializable {
     @NotNull
     private String productName;
 
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(
             name = "users_products",

@@ -27,7 +27,7 @@ public class Authority implements Serializable {
     @JoinColumn(name = "userId")
     private User user;
 
-    @Column
+    @Column(name = "authority")
     private String authority;
 
     public Authority(String authority, User user) {

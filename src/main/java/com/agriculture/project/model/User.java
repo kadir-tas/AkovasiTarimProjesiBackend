@@ -1,7 +1,6 @@
 package com.agriculture.project.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -14,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -64,7 +63,7 @@ public class User implements Serializable {
     private String userPhone;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Authority> authorities = new HashSet<>();
+    private Set<Authority> authority = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(
@@ -75,5 +74,102 @@ public class User implements Serializable {
 
     @ManyToMany(mappedBy = "users")
     private List<Product> products;
+
+    public Set<Authority> getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(Set<Authority> authority) {
+        this.authority = authority;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUserFirstname() {
+        return userFirstname;
+    }
+
+    public void setUserFirstname(String userFirstname) {
+        this.userFirstname = userFirstname;
+    }
+
+    public String getUserLastname() {
+        return userLastname;
+    }
+
+    public void setUserLastname(String userLastname) {
+        this.userLastname = userLastname;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public Date getUserRegistrationDate() {
+        return userRegistrationDate;
+    }
+
+    public void setUserRegistrationDate(Date userRegistrationDate) {
+        this.userRegistrationDate = userRegistrationDate;
+    }
+
+    public String getUserHomeAddress() {
+        return userHomeAddress;
+    }
+
+    public void setUserHomeAddress(String userHomeAddress) {
+        this.userHomeAddress = userHomeAddress;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public List<Farm> getFarms() {
+        return farms;
+    }
+
+    public void setFarms(List<Farm> farms) {
+        this.farms = farms;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
 
 }

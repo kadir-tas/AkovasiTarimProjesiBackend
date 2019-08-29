@@ -8,7 +8,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -43,4 +45,12 @@ public class Farm implements Serializable {
 
     @ManyToMany(mappedBy = "farms")
     private List<User> users;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "farm", cascade = CascadeType.ALL)
+    private Set<Module> modules = new HashSet<>();
+
+    @OneToOne(mappedBy = "farm", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private FarmDrawData farmDrawData;
+
 }
