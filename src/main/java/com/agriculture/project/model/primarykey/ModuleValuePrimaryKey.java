@@ -1,9 +1,12 @@
 package com.agriculture.project.model.primarykey;
 
+import lombok.Data;
+
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Data /*If there is no get func. Json wont be able to show class data*/
 @Embeddable
 public class ModuleValuePrimaryKey implements Serializable {
 

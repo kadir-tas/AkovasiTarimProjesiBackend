@@ -1,6 +1,7 @@
 package com.agriculture.project.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -28,6 +30,7 @@ public class Product implements Serializable {
             name = "users_products",
             joinColumns = {@JoinColumn(name = "productId")},
             inverseJoinColumns = {@JoinColumn(name = "userId")})
-    private List<User> users;
+    @JsonIgnore
+    private Set<User> users = new HashSet<>();
 
 }

@@ -1,6 +1,8 @@
 package com.agriculture.project.model;
 
 import com.agriculture.project.model.primarykey.ModuleValuePrimaryKey;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,7 @@ public class ModuleValue implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "moduleId", referencedColumnName = "moduleId", nullable = false, insertable = false, updatable = false)
+    @JsonIgnore
     private Module module = null;
 
     @NotNull
