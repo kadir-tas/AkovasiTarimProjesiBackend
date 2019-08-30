@@ -1,57 +1,54 @@
 package com.agriculture.project.controller;
 
-import com.agriculture.project.model.Farm;
-import com.agriculture.project.model.Module;
+import com.agriculture.project.controller.request.RegisterFarmRequest;
+import com.agriculture.project.controller.request.UpdateFarmRequest;
+import com.agriculture.project.model.Message;
+import com.agriculture.project.model.dto.FarmDto;
+import com.agriculture.project.model.dto.FarmInfoDto;
 import com.agriculture.project.service.FarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
-
 @RestController
+@RequestMapping("/farm")
 public class FarmController {
 
     @Autowired
     FarmService farmService;
 
     @Secured("ROLE_ADMIN")
-    @GetMapping("/removeFarm")
-    @ResponseBody HttpStatus
+    @GetMapping("/remove")
+    ResponseEntity<?>
     removeFarm(@RequestParam Long farmId ){
-        return farmService.removeFarm(farmId) ? HttpStatus.OK  : HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(farmService.removeFarm(farmId) ? HttpStatus.OK  : HttpStatus.NOT_FOUND);
     }
 
     @Secured("ROLE_ADMIN")
-    @PostMapping("/createFarm")
-    @ResponseBody HttpStatus
-    createFarm( @RequestBody Farm farm){
-        if( farmService.createFarm(farm) ){
-            return HttpStatus.OK;
+    @PostMapping("/register")
+    ResponseEntity<?>
+    createFarm( @RequestBody RegisterFarmRequest registerFarmRequest){
+        if( farmService.registerFarm(registerFarmRequest) ){
+            return new ResponseEntity<>( new Message("Farm " + registerFarmRequest.getFarmName() + " registered succsessfully"),HttpStatus.OK);
         }else{
-            return HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>(new Message("Farm " + registerFarmRequest.getFarmName() + " failed to register"),HttpStatus.BAD_REQUEST);
         }
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping(path = "/getFarm")
-    @ResponseBody Farm
+    @GetMapping(path = "/get")
+    ResponseEntity<?>
     getFarm(@RequestParam Long farmId){
-        return farmService.getFarm(farmId);
+        FarmInfoDto farmInfoDto = farmService.getFarm(farmId);
+        return new ResponseEntity<>(farmInfoDto, farmInfoDto != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping(path = "/getFarmModules")
-    @ResponseBody Set<Module>
-    getFarmModules(@RequestParam Long farmId){
-        return farmService.getFarmModules(farmId);
-    }
-
-    @Secured("ROLE_ADMIN")
-    @PutMapping(path = "/updateFarm")
-    @ResponseBody HttpStatus
-    updateFarm(@RequestBody Farm farm){
-        return farmService.updateFarm(farm) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+    @PutMapping(path = "/update")
+    ResponseEntity<?>
+    updateFarm(@RequestBody UpdateFarmRequest updateFarmRequest){
+        return new ResponseEntity<>(farmService.updateFarm(updateFarmRequest) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }

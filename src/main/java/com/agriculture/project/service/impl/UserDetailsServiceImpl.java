@@ -1,4 +1,4 @@
-package com.agriculture.project.service;
+package com.agriculture.project.service.impl;
 
 import com.agriculture.project.config.security.UserPrincipal;
 import com.agriculture.project.model.User;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;

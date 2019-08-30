@@ -1,6 +1,9 @@
 package com.agriculture.project.model;
 
 
+import com.agriculture.project.model.dto.ModuleValueDto;
+import com.agriculture.project.model.dto.ProductDto;
+import com.agriculture.project.model.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +33,22 @@ public class Product implements Serializable {
             name = "users_products",
             joinColumns = {@JoinColumn(name = "productId")},
             inverseJoinColumns = {@JoinColumn(name = "userId")})
-    @JsonIgnore
     private Set<User> users = new HashSet<>();
+
+    public Set<UserDto> getUsersDto(){
+        Set<UserDto> userDtos = new HashSet<>();
+        for(User u : users){
+            userDtos.add(new UserDto(u));
+        }
+        return userDtos;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "modules_products",
+            joinColumns = {@JoinColumn(name = "productId")},
+            inverseJoinColumns = {@JoinColumn(name = "moduleId")})
+    @JsonIgnore
+    private Set<Module> modules = new HashSet<>();
 
 }

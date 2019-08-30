@@ -1,9 +1,9 @@
 package com.agriculture.project.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.agriculture.project.controller.request.RegisterModuleRequest;
+import com.agriculture.project.model.dto.FarmDto;
+import com.agriculture.project.model.dto.ModuleValueDto;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,7 +29,6 @@ public class Module implements Serializable {
     private String moduleState; /*working or not*/
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "module", cascade = CascadeType.ALL)
-    @JsonIgnore
     private Set<ModuleValue> moduleValues = new HashSet<>();
 
     /*NOTE: Uncomment bellow if you want only farm id to be returned*/
@@ -36,6 +36,28 @@ public class Module implements Serializable {
     @ManyToOne
     @JoinColumn(name = "farmId")
     private Farm farm;
+
+    @ManyToMany(mappedBy = "modules")
+    private List<Product> products;
+
+    public Module(RegisterModuleRequest registerModuleRequest){
+        this.moduleId = registerModuleRequest.getModuleId();
+        this.lastUpdatedDate = registerModuleRequest.getLastUpdatedDate();
+        this.moduleState = registerModuleRequest.getModuleState();
+        this.farm = registerModuleRequest.getFarm();
+    }
+
+    public FarmDto getFarmDto(){
+        return new FarmDto(farm);
+    }
+
+    public Set<ModuleValueDto> getModuleValuesDto(){
+        Set<ModuleValueDto> moduleValueDtos = new HashSet<>();
+        for(ModuleValue mv : moduleValues){
+            moduleValueDtos.add(new ModuleValueDto(mv));
+        }
+        return moduleValueDtos;
+    }
 
     public String getModuleId() {
         return moduleId;

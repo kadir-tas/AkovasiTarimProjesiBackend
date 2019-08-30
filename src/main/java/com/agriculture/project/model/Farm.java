@@ -1,5 +1,9 @@
 package com.agriculture.project.model;
 
+import com.agriculture.project.controller.request.RegisterFarmRequest;
+import com.agriculture.project.model.dto.FarmDto;
+import com.agriculture.project.model.dto.ModuleDto;
+import com.agriculture.project.model.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,10 +12,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -43,18 +45,38 @@ public class Farm implements Serializable {
     @Column
     private double farmSize;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "farms")
     private Set<User> users = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "farm", cascade = CascadeType.ALL)
     private Set<Module> modules = new HashSet<>();
 
-    @JsonIgnore
     @OneToOne(mappedBy = "farm", cascade = CascadeType.ALL,
             fetch = FetchType.LAZY, optional = false)
     private FarmDrawData farmDrawData;
+
+
+    public Farm(RegisterFarmRequest registerFarmRequest){
+        this.farmName = registerFarmRequest.getFarmName();
+        this.farmAddress = registerFarmRequest.getFarmAddress();
+        this.farmLocationLat = registerFarmRequest.getFarmLocationLat();
+        this.farmLocationLon = registerFarmRequest.getFarmLocationLon();
+        this.farmSize = registerFarmRequest.getFarmSize();
+    }
+
+    public Set<UserDto> getUsersDto(){
+        Set<UserDto> userDtos = new HashSet<>();
+        for(User u : users)
+            userDtos.add(new UserDto(u));
+        return userDtos;
+    }
+
+    public Set<ModuleDto> getModulesDto(){
+        Set<ModuleDto> moduleDtos = new HashSet<>();
+        for(Module m : modules)
+            moduleDtos.add(new ModuleDto(m));
+        return moduleDtos;
+    }
 
     public Long getFarmId() {
         return farmId;

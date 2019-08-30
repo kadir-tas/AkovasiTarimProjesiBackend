@@ -4,10 +4,8 @@ public enum Role {
 
     ROLE_ADMIN("ADMIN"),
 
-    ROLE_USER("FARMER"),
-
-    ROLE_MODULE("MODULE");
-
+    ROLE_USER("FARMER");
+    
     private final String role;
 
     private Role(String role) {

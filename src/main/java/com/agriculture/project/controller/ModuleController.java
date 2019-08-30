@@ -1,76 +1,95 @@
 package com.agriculture.project.controller;
 
-import com.agriculture.project.controller.request.FarmsModulesRequest;
-import com.agriculture.project.model.Module;
-import com.agriculture.project.model.ModuleValue;
-import com.agriculture.project.repository.ModuleValueRepository;
-import com.agriculture.project.repository.ModuleRepository;
+import com.agriculture.project.controller.request.FarmModuleRequest;
+import com.agriculture.project.controller.request.RegisterModuleRequest;
+import com.agriculture.project.controller.request.UpdateModuleRequest;
+import com.agriculture.project.model.Message;
+import com.agriculture.project.model.dto.ModuleInfoDto;
 import com.agriculture.project.service.ModulesService;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 @RestController
+@RequestMapping("/module")
 public class ModuleController {
 
     @Autowired
     ModulesService modulesService;
 
     @Secured("ROLE_ADMIN")
-    @GetMapping("/requestModuleValues")
-    @ResponseBody List<ModuleValue>
-    requestModuleValues(@RequestParam String moduleId ){
-        return modulesService.getModuleValues(moduleId);
-    }
-
-    @Secured("ROLE_ADMIN")
-    @GetMapping("/removeModule")
-    @ResponseBody HttpStatus
+    @GetMapping("/remove")
+    ResponseEntity<?>
     removeModule(@RequestParam String moduleId ){
-        return modulesService.removeModule(moduleId) ? HttpStatus.OK  : HttpStatus.NOT_FOUND;
-    }
-
-    @Secured("ROLE_ADMIN")
-    @PostMapping("/registerModule")
-    @ResponseBody HttpStatus
-    registerModule( @RequestBody Module module){
-        if( modulesService.registerModule(module) ){
-            return HttpStatus.OK;
-        }else{
-            return HttpStatus.BAD_REQUEST;
+        if(modulesService.removeModule(moduleId)){
+            return new ResponseEntity<>(new Message("Module " + moduleId + " removed succsessfuly") , HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(new Message("Failed to remove module:" + moduleId) , HttpStatus.NOT_FOUND);
         }
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping(path = "/getModule")
-    @ResponseBody Module
+    @PostMapping("/register")
+    ResponseEntity<?>
+    registerModule(@RequestBody RegisterModuleRequest registerModuleRequest){
+        if(modulesService.registerModule(registerModuleRequest)){
+            return new ResponseEntity<>(new Message("Module " + registerModuleRequest.getModuleId() + " is registered") , HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new Message("Failed to register module: " + registerModuleRequest.getModuleId()) , HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping(path = "/get")
+    ResponseEntity<?>
     getModule(@RequestParam String moduleId){
-        return modulesService.getModule(moduleId);
+        ModuleInfoDto moduleInfoDto = modulesService.getModule(moduleId);
+        return new ResponseEntity<>(moduleInfoDto, moduleInfoDto != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @Secured("ROLE_ADMIN")
-    @PutMapping(path = "/updateModule")
-    @ResponseBody HttpStatus
-    updateModule(@RequestBody Module module){
-        return modulesService.modifyModule(module) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+    @GetMapping(path = "/get/all")
+    ResponseEntity<?>
+    getAllModule(){
+        List<ModuleInfoDto> moduleInfoDto = modulesService.getAllModules();
+        return new ResponseEntity<>(moduleInfoDto, moduleInfoDto != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @Secured("ROLE_ADMIN")
-    @PostMapping("/assignModuleToFarm")
-    @ResponseBody HttpStatus
-    assignModuleToFarm( @RequestBody FarmsModulesRequest farmsModulesRequest){
-        return modulesService.assignModuleToFarm(farmsModulesRequest.getModuleId() , farmsModulesRequest.getFarmId()) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+    @PutMapping(path = "/update")
+    ResponseEntity<?>
+    updateModule(@RequestBody UpdateModuleRequest updateModuleRequest){
+        if(modulesService.updateModule(updateModuleRequest)){
+            return new ResponseEntity<>(new Message("Module " + updateModuleRequest.getModuleId() + " is updated") , HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new Message("Failed to update module: " + updateModuleRequest.getModuleId()) , HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Secured("ROLE_ADMIN")
-    @PostMapping("/unassignModuleToFarm")
-    @ResponseBody HttpStatus
-    unassignModuleToFarm( @RequestBody FarmsModulesRequest farmsModulesRequest){
-        return modulesService.unassignModuleToFarm(farmsModulesRequest.getModuleId() , farmsModulesRequest.getFarmId()) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+    @PostMapping("/assign/farm")
+    ResponseEntity<?>
+    assignModuleToFarm( @RequestBody FarmModuleRequest farmModuleRequest){
+        if(modulesService.assignModuleToFarm(farmModuleRequest)){
+            return new ResponseEntity<>(new Message("Module " + farmModuleRequest.getModuleId() + " is assign to farm " + farmModuleRequest.getFarmId()) , HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new Message("Failed to assign module: " + farmModuleRequest.getModuleId()) + " to farm " + farmModuleRequest.getFarmId(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/revoke/farm")
+    ResponseEntity<?>
+    unassignModuleToFarm( @RequestBody FarmModuleRequest farmModuleRequest){
+        if(modulesService.revokeFarmFromModule(farmModuleRequest)){
+            return new ResponseEntity<>(new Message("Module " + farmModuleRequest.getModuleId() + " is revoked from farm " + farmModuleRequest.getFarmId()) , HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new Message("Failed to revoke module: " + farmModuleRequest.getModuleId()) + " from farm " + farmModuleRequest.getFarmId(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

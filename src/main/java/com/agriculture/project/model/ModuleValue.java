@@ -25,7 +25,6 @@ public class ModuleValue implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "moduleId", referencedColumnName = "moduleId", nullable = false, insertable = false, updatable = false)
-    @JsonIgnore
     private Module module = null;
 
     @NotNull
