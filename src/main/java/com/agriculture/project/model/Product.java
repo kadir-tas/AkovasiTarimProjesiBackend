@@ -33,4 +33,12 @@ public class Product implements Serializable {
     @JsonIgnore
     private Set<User> users = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "modules_products",
+            joinColumns = {@JoinColumn(name = "productId")},
+            inverseJoinColumns = {@JoinColumn(name = "moduleId")})
+    @JsonIgnore
+    private Set<Module> modules = new HashSet<>();
+
 }

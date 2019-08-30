@@ -1,9 +1,7 @@
 package com.agriculture.project.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,6 +35,9 @@ public class Module implements Serializable {
     @ManyToOne
     @JoinColumn(name = "farmId")
     private Farm farm;
+
+    @ManyToMany(mappedBy = "modules")
+    private List<Product> products;
 
     public String getModuleId() {
         return moduleId;

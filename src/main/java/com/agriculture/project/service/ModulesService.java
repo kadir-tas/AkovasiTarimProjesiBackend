@@ -4,7 +4,6 @@ import com.agriculture.project.model.Module;
 import com.agriculture.project.model.ModuleValue;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ModulesService {
 
@@ -13,6 +12,8 @@ public interface ModulesService {
     boolean           modifyModule  (Module module);
     boolean           assignModuleToFarm(String moduleId, Long farmId);
     boolean           unassignModuleToFarm(String moduleId, Long farmId);
+
+    boolean updateModuleValues(String data);
     List<ModuleValue> getModuleValues (String moduleId);
     List<Module>      getAllModules ();
     Module            getModule (String moduleId);

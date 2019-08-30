@@ -35,7 +35,7 @@ public class LoginController {
     JwtTokenProvider tokenProvider;
 
     @PostMapping
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws InterruptedException {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -45,7 +45,6 @@ public class LoginController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwt = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }

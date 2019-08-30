@@ -103,6 +103,11 @@ public class ModulesServiceImpl implements ModulesService {
     }
 
     @Override
+    public boolean updateModuleValues(String data) {
+        return true;
+    }
+
+    @Override
     public List<ModuleValue> getModuleValues(String moduleId) {
         return moduleValueRepository.findByModuleValuePrimaryKeyModuleId(moduleId);
     }
