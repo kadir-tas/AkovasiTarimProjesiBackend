@@ -34,7 +34,7 @@ public class Product implements Serializable {
             joinColumns = {@JoinColumn(name = "productId")},
             inverseJoinColumns = {@JoinColumn(name = "userId")})
     private Set<User> users = new HashSet<>();
-    
+
     public Set<UserDto> getUsersDto(){
         Set<UserDto> userDtos = new HashSet<>();
         for(User u : users){
@@ -42,4 +42,13 @@ public class Product implements Serializable {
         }
         return userDtos;
     }
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "modules_products",
+            joinColumns = {@JoinColumn(name = "productId")},
+            inverseJoinColumns = {@JoinColumn(name = "moduleId")})
+    @JsonIgnore
+    private Set<Module> modules = new HashSet<>();
+
 }

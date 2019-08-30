@@ -56,6 +56,9 @@ public class Module implements Serializable {
         return moduleValueDtos;
     }
 
+    @ManyToMany(mappedBy = "modules")
+    private List<Product> products;
+
     public String getModuleId() {
         return moduleId;
     }
