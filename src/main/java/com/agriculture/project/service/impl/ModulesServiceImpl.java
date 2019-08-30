@@ -5,8 +5,6 @@ import com.agriculture.project.controller.request.RegisterModuleRequest;
 import com.agriculture.project.controller.request.UpdateModuleRequest;
 import com.agriculture.project.model.Farm;
 import com.agriculture.project.model.Module;
-import com.agriculture.project.model.ModuleValue;
-import com.agriculture.project.model.dto.ModuleDto;
 import com.agriculture.project.model.dto.ModuleInfoDto;
 import com.agriculture.project.repository.FarmRepository;
 import com.agriculture.project.repository.ModuleRepository;
@@ -126,7 +124,8 @@ public class ModulesServiceImpl implements ModulesService {
     }
 
     @Override
-    public boolean updateModuleValues(String formatedData) throws Exception {
-        throw new Exception("AAA IMPLEMENT ME PLZ");
+    public boolean updateModuleValues(String formatedData) {
+        System.out.println(formatedData);
+        return true;
     }
 }

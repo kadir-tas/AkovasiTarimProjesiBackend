@@ -19,7 +19,7 @@ public class TcpServerEndpoint {
     }
 
     @ServiceActivator(inputChannel = "serviceChannel")
-    public byte[] process(String message) throws InterruptedException {
+    public byte[] process(String message) {
         if (modulesService.updateModuleValues(message)) {
             return TCP_RETURN_OK;
         }

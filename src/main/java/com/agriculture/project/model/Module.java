@@ -3,7 +3,6 @@ package com.agriculture.project.model;
 import com.agriculture.project.controller.request.RegisterModuleRequest;
 import com.agriculture.project.model.dto.FarmDto;
 import com.agriculture.project.model.dto.ModuleValueDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -37,6 +37,9 @@ public class Module implements Serializable {
     @JoinColumn(name = "farmId")
     private Farm farm;
 
+    @ManyToMany(mappedBy = "modules")
+    private List<Product> products;
+
     public Module(RegisterModuleRequest registerModuleRequest){
         this.moduleId = registerModuleRequest.getModuleId();
         this.lastUpdatedDate = registerModuleRequest.getLastUpdatedDate();
@@ -55,9 +58,6 @@ public class Module implements Serializable {
         }
         return moduleValueDtos;
     }
-
-    @ManyToMany(mappedBy = "modules")
-    private List<Product> products;
 
     public String getModuleId() {
         return moduleId;
