@@ -15,7 +15,7 @@ public class TcpServerEndpoint {
         this.messageService = messageService;
     }
 
-    @ServiceActivator(inputChannel = "inboundChannel")
+    @ServiceActivator(inputChannel = "")
     public byte[] process(byte[] message) {
         return messageService.processMessage(message);
     }
