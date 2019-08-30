@@ -1,14 +1,16 @@
 package com.agriculture.project.service;
 
-import com.agriculture.project.model.Farm;
+import com.agriculture.project.controller.request.RegisterFarmRequest;
+import com.agriculture.project.controller.request.UpdateFarmRequest;
 import com.agriculture.project.model.Module;
-import java.util.List;
+import com.agriculture.project.model.dto.FarmDto;
+import com.agriculture.project.model.dto.FarmInfoDto;
+
 import java.util.Set;
 
 public interface FarmService {
-    boolean      createFarm(Farm farm);
-    boolean      updateFarm(Farm farm);
+    boolean      registerFarm(RegisterFarmRequest registerFarmRequest);
+    boolean      updateFarm(UpdateFarmRequest updateFarmRequest);
     boolean      removeFarm(long farmId);
-    Farm         getFarm   (long farmId);
-    Set<Module> getFarmModules(long farmId);
+    FarmInfoDto  getFarm   (long farmId);
 }

@@ -1,16 +1,20 @@
 package com.agriculture.project.service.impl;
 
+import com.agriculture.project.controller.request.*;
+import com.agriculture.project.model.Authority;
 import com.agriculture.project.model.Farm;
 import com.agriculture.project.model.Product;
 import com.agriculture.project.model.User;
+import com.agriculture.project.model.dto.UserInfoDto;
+import com.agriculture.project.model.value.Role;
 import com.agriculture.project.repository.FarmRepository;
 import com.agriculture.project.repository.ProductRepository;
 import com.agriculture.project.repository.UserRepository;
 import com.agriculture.project.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,10 +30,13 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Override
-    public boolean assignFarm(Long userId, Long farmId) {
-        Optional<User> userOp = userRepository.findById(userId);
-        Optional<Farm> farmOp = farmRepository.findById(farmId);
+    public boolean assignFarm(FarmsUsersRequest farmsUsersRequest) {
+        Optional<User> userOp = userRepository.findById(farmsUsersRequest.getUserId());
+        Optional<Farm> farmOp = farmRepository.findById(farmsUsersRequest.getFarmId());
         if(userOp.isPresent() && farmOp.isPresent()){
             User u = userOp.get();
             Farm f = farmOp.get();
@@ -47,9 +54,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public boolean unassignFarm(Long userId, Long farmId) {
-        Optional<User> userOp = userRepository.findById(userId);
-        Optional<Farm> farmOp = farmRepository.findById(farmId);
+    public boolean revokeFarm(FarmsUsersRequest farmsUsersRequest) {
+        Optional<User> userOp = userRepository.findById(farmsUsersRequest.getUserId());
+        Optional<Farm> farmOp = farmRepository.findById(farmsUsersRequest.getFarmId());
 
         if(userOp.isPresent() && farmOp.isPresent()){
             User u = userOp.get();
@@ -66,14 +73,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<Farm> getUsersFarm(Long userId) {
-        return farmRepository.findByUsersUserId(userId);
-    }
-
-    @Override
-    public boolean assignProduct(Long userId, Long productId) {
-        Optional<User> userOp = userRepository.findById(userId);
-        Optional<Product> productOp = productRepository.findById(productId);
+    public boolean assignProduct(ProductsUsersRequest productsUsersRequest) {
+        Optional<User> userOp = userRepository.findById(productsUsersRequest.getUserId());
+        Optional<Product> productOp = productRepository.findById(productsUsersRequest.getProductId());
         if(userOp.isPresent() && productOp.isPresent()){
             User u = userOp.get();
             Product p = productOp.get();
@@ -89,9 +91,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public boolean unassignProduct(Long userId, Long productId) {
-        Optional<User> userOp = userRepository.findById(userId);
-        Optional<Product> productOp = productRepository.findById(productId);
+    public boolean revokeProduct(ProductsUsersRequest productsUsersRequest) {
+        Optional<User> userOp = userRepository.findById(productsUsersRequest.getUserId());
+        Optional<Product> productOp = productRepository.findById(productsUsersRequest.getProductId());
         if(userOp.isPresent() && productOp.isPresent()){
             User u = userOp.get();
             Product p = productOp.get();
@@ -107,7 +109,67 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<Product> getUsersProducts(Long userId) {
-        return productRepository.findByUsersUserId(userId);
+    public boolean registerUser(RegisterUserRequest registerUserRequest) {
+        if(userRepository.existsByUserEmail(registerUserRequest.getUserEmail()) || userRepository.existsByUsername(registerUserRequest.getUsername()))
+            return false;
+        registerUserRequest.setUserPassword(passwordEncoder.encode(registerUserRequest.getUserPassword()));
+
+        User u = new User(registerUserRequest);
+        userRepository.save(u);
+        assignUserAuth(new UserAuthRequest(u.getUserId(), Role.ROLE_USER));
+        return true;
+    }
+
+    @Override
+    public UserInfoDto getUser(Long userId) {
+        Optional<User> userOp = userRepository.findById(userId);
+        if(userOp.isPresent()){
+            return new UserInfoDto(userOp.get());
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateUser(UpdateUserRequest upreq) {
+        User user = userRepository.findByUsername(upreq.getUsername());
+        if(user != null){
+            if(!upreq.getUserFirstname().equals("")) user.setUserFirstname(upreq.getUserFirstname());
+            if(!upreq.getUserLastname().equals("")) user.setUserFirstname(upreq.getUserLastname());
+            if(!upreq.getUserHomeAddress().equals("")) user.setUserFirstname(upreq.getUserHomeAddress());
+            if(!upreq.getUserPhone().equals("")) user.setUserFirstname(upreq.getUserPhone());
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean assignUserAuth(UserAuthRequest userAuthRequest) {
+        Optional<User> userOp = userRepository.findById(userAuthRequest.getUserId());
+        if(userOp.isPresent()){
+            User u = userOp.get();
+            Authority a = new Authority(userAuthRequest.getRole().getRole(), u);
+            if(!u.getAuthority().contains(a)){
+                u.getAuthority().add(a);
+                userRepository.save(u);
+                return  true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean revokeUserAuth(UserAuthRequest userAuthRequest) {
+        Optional<User> userOp = userRepository.findById(userAuthRequest.getUserId());
+        if(userOp.isPresent()){
+            User u = userOp.get();
+            Authority a = new Authority(userAuthRequest.getRole().getRole(), u);
+            if(u.getAuthority().contains(a)){
+                u.getAuthority().remove(a);
+                userRepository.save(u);
+                return  true;
+            }
+        }
+        return false;
     }
 }

@@ -1,13 +1,20 @@
 package com.agriculture.project.model;
 
+import com.agriculture.project.controller.request.RegisterUserRequest;
+import com.agriculture.project.model.dto.AuthorityDto;
+import com.agriculture.project.model.dto.FarmDto;
+import com.agriculture.project.model.dto.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -74,6 +81,35 @@ public class User implements Serializable {
 
     @ManyToMany(mappedBy = "users")
     private List<Product> products;
+
+    public User(RegisterUserRequest registerUserRequest){
+        this.userRegistrationDate = Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)); // TODO: MAYBE CHANGE THIS BECAUSE GETTING TIME WHEN HERE IS BAAAAAAD
+        this.username = registerUserRequest.getUsername();
+        this.userFirstname = registerUserRequest.getUserFirstname();
+        this.userLastname = registerUserRequest.getUserLastname();
+        this.userPassword = registerUserRequest.getUserPassword();
+        this.userHomeAddress = registerUserRequest.getUserHomeAddress();
+        this.userEmail = registerUserRequest.getUserEmail();
+        this.userPhone = registerUserRequest.getUserPhone();
+    }
+
+    public Set<FarmDto> getFarmsDto(){
+        Set<FarmDto> farmDtos = new HashSet<>();
+        for(Farm f : farms) farmDtos.add(new FarmDto(f));
+        return farmDtos;
+    }
+
+    public Set<ProductDto> getProductsDto(){
+        Set<ProductDto> productDtos = new HashSet<>();
+        for(Product p : products) productDtos.add(new ProductDto(p));
+        return productDtos;
+    }
+
+    public Set<AuthorityDto> getAuthorityDto(){
+        Set<AuthorityDto> authorityDtos = new HashSet<>();
+        for(Authority a : authority) authorityDtos.add(new AuthorityDto(a));
+        return authorityDtos;
+    }
 
     public Set<Authority> getAuthority() {
         return authority;

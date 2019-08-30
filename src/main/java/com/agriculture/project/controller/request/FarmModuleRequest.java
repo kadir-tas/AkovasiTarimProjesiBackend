@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FarmsModulesRequest {
+public class FarmModuleRequest {
     private String moduleId;
     private Long farmId;
 }

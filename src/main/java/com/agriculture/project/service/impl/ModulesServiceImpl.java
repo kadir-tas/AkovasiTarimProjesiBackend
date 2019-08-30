@@ -1,8 +1,13 @@
 package com.agriculture.project.service.impl;
 
+import com.agriculture.project.controller.request.FarmModuleRequest;
+import com.agriculture.project.controller.request.RegisterModuleRequest;
+import com.agriculture.project.controller.request.UpdateModuleRequest;
 import com.agriculture.project.model.Farm;
 import com.agriculture.project.model.Module;
 import com.agriculture.project.model.ModuleValue;
+import com.agriculture.project.model.dto.ModuleDto;
+import com.agriculture.project.model.dto.ModuleInfoDto;
 import com.agriculture.project.repository.FarmRepository;
 import com.agriculture.project.repository.ModuleRepository;
 import com.agriculture.project.repository.ModuleValueRepository;
@@ -10,6 +15,7 @@ import com.agriculture.project.service.ModulesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,12 +32,12 @@ public class ModulesServiceImpl implements ModulesService {
     FarmRepository farmRepository;
 
     @Override
-    public boolean registerModule(Module module) {
-        Optional<Module> optionalModule = moduleRepository.findById(module.getModuleId());
+    public boolean registerModule(RegisterModuleRequest registerModuleRequest) {
+        Optional<Module> optionalModule = moduleRepository.findById(registerModuleRequest.getModuleId());
         if(optionalModule.isPresent()) {
             return  false;
         }else{
-            moduleRepository.save(module);
+            moduleRepository.save(new Module(registerModuleRequest));
             return true;
         }
     }
@@ -47,18 +53,15 @@ public class ModulesServiceImpl implements ModulesService {
     }
 
     @Override
-    public boolean modifyModule(Module module) {
-        System.out.println(module);
-        System.out.println(moduleRepository);
+    public boolean updateModule(UpdateModuleRequest updateModuleRequest) {
 
-        Optional<Module> optionalModule = moduleRepository.findById(module.getModuleId());
+        Optional<Module> optionalModule = moduleRepository.findById(updateModuleRequest.getModuleId());
         if(optionalModule.isPresent()) {
             Module m = optionalModule.get();
 
             /*So that only the values that has been provided will be updated*/
-            if(module.getLastUpdatedDate() != null )    m.setLastUpdatedDate(module.getLastUpdatedDate());
-            if(!module.getModuleState().equals(""))     m.setModuleState(module.getModuleState()); /*TODO: Make sure state is a valid state*/
-
+            if(updateModuleRequest.getLastUpdatedDate() != null )    m.setLastUpdatedDate(updateModuleRequest.getLastUpdatedDate());
+            if(!updateModuleRequest.getModuleState().equals(""))     m.setModuleState(updateModuleRequest.getModuleState()); /*TODO: Make sure state is a valid state*/
             moduleRepository.save(m);
             return true;
         }else{
@@ -67,9 +70,9 @@ public class ModulesServiceImpl implements ModulesService {
     }
 
     @Override
-    public boolean assignModuleToFarm(String moduleId, Long farmId) {
-        Optional<Module> moduleOp = moduleRepository.findById(moduleId);
-        Optional<Farm> farmOp = farmRepository.findById(farmId);
+    public boolean assignModuleToFarm(FarmModuleRequest farmModuleRequest) {
+        Optional<Module> moduleOp = moduleRepository.findById(farmModuleRequest.getModuleId());
+        Optional<Farm> farmOp = farmRepository.findById(farmModuleRequest.getFarmId());
         if(moduleOp.isPresent() && farmOp.isPresent()){
             Module m = moduleOp.get();
             Farm f = farmOp.get();
@@ -85,9 +88,9 @@ public class ModulesServiceImpl implements ModulesService {
     }
 
     @Override
-    public boolean unassignModuleToFarm(String moduleId, Long farmId) {
-        Optional<Module> moduleOp = moduleRepository.findById(moduleId);
-        Optional<Farm> farmOp = farmRepository.findById(farmId);
+    public boolean revokeFarmFromModule(FarmModuleRequest farmModuleRequest) {
+        Optional<Module> moduleOp = moduleRepository.findById(farmModuleRequest.getModuleId());
+        Optional<Farm> farmOp = farmRepository.findById(farmModuleRequest.getFarmId());
         if(moduleOp.isPresent() && farmOp.isPresent()){
             Module m = moduleOp.get();
             Farm f = farmOp.get();
@@ -103,22 +106,27 @@ public class ModulesServiceImpl implements ModulesService {
     }
 
     @Override
-    public List<ModuleValue> getModuleValues(String moduleId) {
-        return moduleValueRepository.findByModuleValuePrimaryKeyModuleId(moduleId);
+    public List<ModuleInfoDto> getAllModules() {
+        List<ModuleInfoDto> moduleDtos = new ArrayList<>();
+        List<Module> modules = moduleRepository.findAll();
+        for(Module m : modules){
+           moduleDtos.add(new ModuleInfoDto(m));
+        }
+        return moduleDtos;
     }
 
     @Override
-    public List<Module> getAllModules() {
-        return moduleRepository.findAll();
-    }
-
-    @Override
-    public Module getModule(String moduleId) {
+    public ModuleInfoDto getModule(String moduleId) {
         Optional<Module> m = moduleRepository.findById(moduleId);
         if(m.isPresent()){
-            return m.get();
+            return new ModuleInfoDto(m.get());
         }else{
             return null;
         }
+    }
+
+    @Override
+    public boolean updateModuleValues(String formatedData) throws Exception {
+        throw new Exception("AAA IMPLEMENT ME PLZ");
     }
 }
