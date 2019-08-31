@@ -2,11 +2,8 @@ package com.agriculture.project.controller.request;
 
 import com.agriculture.project.model.Farm;
 
-import java.util.Date;
-
 public class RegisterModuleRequest {
     private String moduleId;
-    private Date lastUpdatedDate;
     private String moduleState;
     private Farm farm;
 
@@ -16,14 +13,6 @@ public class RegisterModuleRequest {
 
     public void setModuleId(String moduleId) {
         this.moduleId = moduleId;
-    }
-
-    public Date getLastUpdatedDate() {
-        return lastUpdatedDate;
-    }
-
-    public void setLastUpdatedDate(Date lastUpdatedDate) {
-        this.lastUpdatedDate = lastUpdatedDate;
     }
 
     public String getModuleState() {

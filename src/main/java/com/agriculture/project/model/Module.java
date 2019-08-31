@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -38,11 +35,11 @@ public class Module implements Serializable {
     private Farm farm;
 
     @ManyToMany(mappedBy = "modules")
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public Module(RegisterModuleRequest registerModuleRequest){
         this.moduleId = registerModuleRequest.getModuleId();
-        this.lastUpdatedDate = registerModuleRequest.getLastUpdatedDate();
+        this.lastUpdatedDate = new Date();
         this.moduleState = registerModuleRequest.getModuleState();
         this.farm = registerModuleRequest.getFarm();
     }

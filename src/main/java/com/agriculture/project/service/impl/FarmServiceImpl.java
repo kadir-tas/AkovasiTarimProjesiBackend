@@ -9,8 +9,7 @@ import com.agriculture.project.service.FarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FarmServiceImpl implements FarmService {
@@ -48,8 +47,12 @@ public class FarmServiceImpl implements FarmService {
 
     @Override
     public boolean removeFarm(long farmId) {
-        if(farmRepository.existsById(farmId)){
-            farmRepository.deleteById(farmId);
+        Optional<Farm> farmOp = farmRepository.findById(farmId);
+        if (farmOp.isPresent()) {
+            Farm f = farmOp.get();
+            f.getUsers().forEach(user -> user.getFarms().remove(f));
+            f.getModules().forEach(module -> module.setFarm(null));
+            farmRepository.delete(f);
             return true;
         }else{
             return false;
@@ -64,5 +67,15 @@ public class FarmServiceImpl implements FarmService {
         }else{
             return null;
         }
+    }
+
+    @Override
+    public Set<FarmInfoDto> getAllFarm() {
+        Set<FarmInfoDto> farmInfoDtos = new HashSet<>();
+        List<Farm> farms = farmRepository.findAll();
+        for (Farm f : farms) {
+            farmInfoDtos.add(new FarmInfoDto(f));
+        }
+        return farmInfoDtos;
     }
 }

@@ -2,7 +2,6 @@ package com.agriculture.project.controller;
 
 import com.agriculture.project.controller.request.FarmModuleRequest;
 import com.agriculture.project.controller.request.RegisterModuleRequest;
-import com.agriculture.project.controller.request.UpdateModuleRequest;
 import com.agriculture.project.model.Message;
 import com.agriculture.project.model.dto.ModuleInfoDto;
 import com.agriculture.project.service.ModulesService;
@@ -13,7 +12,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/module")
@@ -23,7 +21,7 @@ public class ModuleController {
     ModulesService modulesService;
 
     @Secured("ROLE_ADMIN")
-    @GetMapping("/remove")
+    @PostMapping("/remove")
     ResponseEntity<?>
     removeModule(@RequestParam String moduleId ){
         if(modulesService.removeModule(moduleId)){
@@ -60,8 +58,10 @@ public class ModuleController {
         return new ResponseEntity<>(moduleInfoDto, moduleInfoDto != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
+    //NOTE: CODE BELLOW IS NO NEEDED RIGHT NOW BECAUSE ALL THE UPDATE STUFF WILL BE DONE THROUGH TCP
+/*
     @Secured("ROLE_ADMIN")
-    @PutMapping(path = "/update")
+    @PostMapping(path = "/update")
     ResponseEntity<?>
     updateModule(@RequestBody UpdateModuleRequest updateModuleRequest){
         if(modulesService.updateModule(updateModuleRequest)){
@@ -70,7 +70,7 @@ public class ModuleController {
             return new ResponseEntity<>(new Message("Failed to update module: " + updateModuleRequest.getModuleId()) , HttpStatus.BAD_REQUEST);
         }
     }
-
+*/
     @Secured("ROLE_ADMIN")
     @PostMapping("/assign/farm")
     ResponseEntity<?>
@@ -78,7 +78,7 @@ public class ModuleController {
         if(modulesService.assignModuleToFarm(farmModuleRequest)){
             return new ResponseEntity<>(new Message("Module " + farmModuleRequest.getModuleId() + " is assign to farm " + farmModuleRequest.getFarmId()) , HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(new Message("Failed to assign module: " + farmModuleRequest.getModuleId()) + " to farm " + farmModuleRequest.getFarmId(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Message("Failed to assign module: " + farmModuleRequest.getModuleId() + " to farm " + farmModuleRequest.getFarmId()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -89,7 +89,7 @@ public class ModuleController {
         if(modulesService.revokeFarmFromModule(farmModuleRequest)){
             return new ResponseEntity<>(new Message("Module " + farmModuleRequest.getModuleId() + " is revoked from farm " + farmModuleRequest.getFarmId()) , HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(new Message("Failed to revoke module: " + farmModuleRequest.getModuleId()) + " from farm " + farmModuleRequest.getFarmId(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Message("Failed to revoke module: " + farmModuleRequest.getModuleId() + " from farm " + farmModuleRequest.getFarmId()), HttpStatus.BAD_REQUEST);
         }
     }
 }

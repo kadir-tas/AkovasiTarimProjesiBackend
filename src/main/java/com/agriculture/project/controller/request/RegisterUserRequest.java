@@ -1,14 +1,5 @@
 package com.agriculture.project.controller.request;
 
-import org.hibernate.validator.constraints.Length;
-
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import java.util.Date;
-
 public class RegisterUserRequest {
     private String username;
     private String userFirstname;
@@ -20,6 +11,11 @@ public class RegisterUserRequest {
 
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public String toString() {
+        return username + " " + userFirstname + " " + userLastname;
     }
 
     public void setUsername(String username) {

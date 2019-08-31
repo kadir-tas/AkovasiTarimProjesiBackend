@@ -42,8 +42,12 @@ public class ModulesServiceImpl implements ModulesService {
 
     @Override
     public boolean removeModule(String moduleId) {
-        if(moduleRepository.existsById(moduleId)){
-            moduleRepository.deleteById(moduleId);
+        Optional<Module> moduleOp = moduleRepository.findById(moduleId);
+        if (moduleOp.isPresent()) {
+            Module m = moduleOp.get();
+            m.getFarm().getModules().remove(m);
+            m.getModuleValues().clear();
+            moduleRepository.delete(m);
             return true;
         }else{
             return false;
@@ -82,6 +86,7 @@ public class ModulesServiceImpl implements ModulesService {
                 return true;
             }
         }
+
         return false;
     }
 

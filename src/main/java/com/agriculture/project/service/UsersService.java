@@ -1,13 +1,7 @@
 package com.agriculture.project.service;
 
 import com.agriculture.project.controller.request.*;
-import com.agriculture.project.model.Farm;
-import com.agriculture.project.model.Product;
 import com.agriculture.project.model.dto.UserInfoDto;
-import com.agriculture.project.model.value.*;
-import com.agriculture.project.model.dto.UserDto;
-
-import java.util.List;
 
 public interface UsersService {
 
@@ -18,8 +12,11 @@ public interface UsersService {
     boolean revokeProduct(ProductsUsersRequest productsUsersRequest);
 
     boolean registerUser(RegisterUserRequest registerUserRequest);
-    boolean updateUser(UpdateUserRequest userDto);
+
+    boolean updateUser(UpdateUserRequest updateUserRequest);
     UserInfoDto getUser(Long userId);
+
+    UserInfoDto getUser(String username);
 
 
     boolean assignUserAuth(UserAuthRequest userAuthRequest);

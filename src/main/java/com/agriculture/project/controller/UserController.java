@@ -20,14 +20,22 @@ public class UserController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/get")
     ResponseEntity<?>
-    getUser(@RequestParam Long userId){
-        UserInfoDto userInfoDto = usersService.getUser(userId);
+    getUserById(@RequestParam(required = false) Long userId, @RequestParam(required = false) String username) {
+        UserInfoDto userInfoDto = null;
+
+        if (userId != null)
+            userInfoDto = usersService.getUser(userId);
+
+        if (userInfoDto == null && username != null)
+            userInfoDto = usersService.getUser(username);
+
         if(userInfoDto != null){
             return new ResponseEntity<>(userInfoDto, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(new Message(userId + " not found"), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @Secured("ROLE_ADMIN")
     @PostMapping("/register")

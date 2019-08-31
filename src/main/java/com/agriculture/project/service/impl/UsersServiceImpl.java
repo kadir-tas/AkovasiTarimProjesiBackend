@@ -130,13 +130,22 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public UserInfoDto getUser(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return new UserInfoDto(user);
+        }
+        return null;
+    }
+
+    @Override
     public boolean updateUser(UpdateUserRequest upreq) {
         User user = userRepository.findByUsername(upreq.getUsername());
         if(user != null){
             if(!upreq.getUserFirstname().equals("")) user.setUserFirstname(upreq.getUserFirstname());
-            if(!upreq.getUserLastname().equals("")) user.setUserFirstname(upreq.getUserLastname());
-            if(!upreq.getUserHomeAddress().equals("")) user.setUserFirstname(upreq.getUserHomeAddress());
-            if(!upreq.getUserPhone().equals("")) user.setUserFirstname(upreq.getUserPhone());
+            if (!upreq.getUserLastname().equals("")) user.setUserLastname(upreq.getUserLastname());
+            if (!upreq.getUserHomeAddress().equals("")) user.setUserHomeAddress(upreq.getUserHomeAddress());
+            if (!upreq.getUserPhone().equals("")) user.setUserPhone(upreq.getUserPhone());
             userRepository.save(user);
             return true;
         }
@@ -148,9 +157,15 @@ public class UsersServiceImpl implements UsersService {
         Optional<User> userOp = userRepository.findById(userAuthRequest.getUserId());
         if(userOp.isPresent()){
             User u = userOp.get();
-            Authority a = new Authority(userAuthRequest.getRole().getRole(), u);
-            if(!u.getAuthority().contains(a)){
-                u.getAuthority().add(a);
+            boolean userHasAuth = false;
+            for (Authority a : u.getAuthority()) {
+                if (a.getAuthority().equals(userAuthRequest.getRole().getRole())) {
+                    userHasAuth = true;
+                    break;
+                }
+            }
+            if (!userHasAuth) {
+                u.getAuthority().add(new Authority(userAuthRequest.getRole().getRole(), u));
                 userRepository.save(u);
                 return  true;
             }
@@ -163,9 +178,16 @@ public class UsersServiceImpl implements UsersService {
         Optional<User> userOp = userRepository.findById(userAuthRequest.getUserId());
         if(userOp.isPresent()){
             User u = userOp.get();
-            Authority a = new Authority(userAuthRequest.getRole().getRole(), u);
-            if(u.getAuthority().contains(a)){
-                u.getAuthority().remove(a);
+            boolean userHasAuth = false;
+            for (Authority a : u.getAuthority()) {
+                if (a.getAuthority().equals(userAuthRequest.getRole().getRole())) {
+                    userHasAuth = true;
+                    a.setUser(null);
+                    u.getAuthority().remove(a);
+                    break;
+                }
+            }
+            if (userHasAuth) {
                 userRepository.save(u);
                 return  true;
             }

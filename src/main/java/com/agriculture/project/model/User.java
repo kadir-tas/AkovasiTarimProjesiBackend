@@ -80,7 +80,8 @@ public class User implements Serializable {
     private List<Product> products;
 
     public User(RegisterUserRequest registerUserRequest){
-        this.userRegistrationDate = new Date(); // TODO: MAYBE CHANGE THIS BECAUSE GETTING TIME WHEN HERE IS BAAAAAAD
+        System.out.println(registerUserRequest.toString());
+        this.userRegistrationDate = new Date();
         this.username = registerUserRequest.getUsername();
         this.userFirstname = registerUserRequest.getUserFirstname();
         this.userLastname = registerUserRequest.getUserLastname();

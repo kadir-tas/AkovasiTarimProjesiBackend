@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FarmsUsersRequest { /*TODO: RENAME THIS CLASS*/
+public class FarmsUsersRequest {
     private Long userId;
     private Long farmId;
 }

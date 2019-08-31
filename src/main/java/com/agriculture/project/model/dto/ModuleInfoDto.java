@@ -17,8 +17,11 @@ public class ModuleInfoDto {
         this.moduleId = module.getModuleId();
         this.lastUpdatedDate = module.getLastUpdatedDate();
         this.moduleState = module.getModuleState();
-        this.moduleValues = module.getModuleValuesDto();
-        this.farm = module.getFarmDto();
+
+        if (module.getModuleValues() != null)
+            this.moduleValues = module.getModuleValuesDto();
+        if (module.getFarm() != null)
+            this.farm = module.getFarmDto();
     }
 
     public String getModuleId() {
