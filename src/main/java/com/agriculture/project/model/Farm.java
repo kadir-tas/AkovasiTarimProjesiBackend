@@ -1,19 +1,17 @@
 package com.agriculture.project.model;
 
 import com.agriculture.project.controller.request.RegisterFarmRequest;
-import com.agriculture.project.model.dto.FarmDto;
 import com.agriculture.project.model.dto.ModuleDto;
 import com.agriculture.project.model.dto.UserDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor

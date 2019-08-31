@@ -7,14 +7,11 @@ import com.agriculture.project.model.dto.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -35,38 +32,38 @@ public class User implements Serializable {
     private Long userId;
 
     @Column(unique = true)
-    @NotEmpty(message = "*Please provide name")
+    @NotNull(message = "*Please provide name")
     private String username;
 
     @Column
-    @NotEmpty
+    @NotNull
     private String userFirstname;
 
     @Column
-    @NotEmpty
+    @NotNull
     private String userLastname;
 
     @Column
     @Length(min = 5, message = "*Your password must have at least 5 characters")
-    @NotEmpty(message = "*Please provide your password")
+    @NotNull(message = "*Please provide your password")
     private String userPassword;
 
     @Column
-    @NotEmpty
-    @Temporal(TemporalType.DATE)
+    @NotNull
+    @Temporal(value = TemporalType.DATE)
     private Date userRegistrationDate;
 
     @Column
-    @NotEmpty
+    @NotNull
     private String userHomeAddress;
 
     @Column(name = "email")
     @Email(message = "*Please provide a valid Email")
-    @NotEmpty(message = "*Please provide an email")
+    @NotNull(message = "*Please provide an email")
     private String userEmail;
 
     @Column
-    @NotEmpty
+    @NotNull
     private String userPhone;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
@@ -83,7 +80,7 @@ public class User implements Serializable {
     private List<Product> products;
 
     public User(RegisterUserRequest registerUserRequest){
-        this.userRegistrationDate = Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)); // TODO: MAYBE CHANGE THIS BECAUSE GETTING TIME WHEN HERE IS BAAAAAAD
+        this.userRegistrationDate = new Date(); // TODO: MAYBE CHANGE THIS BECAUSE GETTING TIME WHEN HERE IS BAAAAAAD
         this.username = registerUserRequest.getUsername();
         this.userFirstname = registerUserRequest.getUserFirstname();
         this.userLastname = registerUserRequest.getUserLastname();

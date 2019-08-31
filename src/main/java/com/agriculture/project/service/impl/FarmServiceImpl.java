@@ -3,20 +3,14 @@ package com.agriculture.project.service.impl;
 import com.agriculture.project.controller.request.RegisterFarmRequest;
 import com.agriculture.project.controller.request.UpdateFarmRequest;
 import com.agriculture.project.model.Farm;
-import com.agriculture.project.model.Module;
-import com.agriculture.project.model.dto.FarmDto;
 import com.agriculture.project.model.dto.FarmInfoDto;
 import com.agriculture.project.repository.FarmRepository;
 import com.agriculture.project.service.FarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class FarmServiceImpl implements FarmService {
@@ -27,7 +21,7 @@ public class FarmServiceImpl implements FarmService {
     @Override
     public boolean registerFarm(RegisterFarmRequest registerFarmRequest) {
         Farm f = new Farm(registerFarmRequest);
-        f.setFarmRegistrationDate(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
+        f.setFarmRegistrationDate(new Date());
         farmRepository.save(new Farm(registerFarmRequest));
         return true;
     }
