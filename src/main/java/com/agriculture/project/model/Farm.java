@@ -46,11 +46,11 @@ public class Farm implements Serializable {
     @ManyToMany(mappedBy = "farms")
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "farm", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Module> modules = new HashSet<>();
 
     @OneToOne(mappedBy = "farm", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
+            fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     private FarmDrawData farmDrawData;
 
 

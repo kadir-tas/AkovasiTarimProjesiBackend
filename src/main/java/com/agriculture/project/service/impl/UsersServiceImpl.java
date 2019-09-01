@@ -152,6 +152,7 @@ public class UsersServiceImpl implements UsersService {
         return false;
     }
 
+    //TODO: assignUserAuth & revokeUserAuth works, but no need for this complicated stuff improve it pleaseeee
     @Override
     public boolean assignUserAuth(UserAuthRequest userAuthRequest) {
         Optional<User> userOp = userRepository.findById(userAuthRequest.getUserId());

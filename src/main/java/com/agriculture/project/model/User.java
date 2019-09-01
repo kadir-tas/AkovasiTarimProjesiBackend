@@ -66,7 +66,7 @@ public class User implements Serializable {
     @NotNull
     private String userPhone;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Authority> authority = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})

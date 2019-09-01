@@ -47,14 +47,10 @@ public class FarmServiceImpl implements FarmService {
 
     @Override
     public boolean removeFarm(long farmId) {
-        Optional<Farm> farmOp = farmRepository.findById(farmId);
-        if (farmOp.isPresent()) {
-            Farm f = farmOp.get();
-            f.getUsers().forEach(user -> user.getFarms().remove(f));
-            f.getModules().forEach(module -> module.setFarm(null));
-            farmRepository.delete(f);
+        if (farmRepository.existsById(farmId)) {
+            farmRepository.deleteById(farmId);
             return true;
-        }else{
+        } else {
             return false;
         }
     }

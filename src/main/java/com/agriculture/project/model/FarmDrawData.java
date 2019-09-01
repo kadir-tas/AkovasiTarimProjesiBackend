@@ -1,7 +1,5 @@
 package com.agriculture.project.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +29,7 @@ public class FarmDrawData implements Serializable {
     @Column(length = 512)
     private String productDrawData;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "farmId")
     private Farm farm;
 

@@ -25,11 +25,9 @@ public class Module implements Serializable {
     @NotNull
     private String moduleState; /*working or not*/
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "module", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ModuleValue> moduleValues = new HashSet<>();
 
-    /*NOTE: Uncomment bellow if you want only farm id to be returned*/
-    //@JsonIgnoreProperties(value = {"farmName" ,"farmAddress","farmLocationLat","farmLocationLon","farmRegistrationDate","farmSize"})
     @ManyToOne
     @JoinColumn(name = "farmId")
     private Farm farm;
