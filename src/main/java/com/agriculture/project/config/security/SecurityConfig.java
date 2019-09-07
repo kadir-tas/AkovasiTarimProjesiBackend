@@ -11,10 +11,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -50,13 +50,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors().and().csrf().disable().exceptionHandling()
+//         httpBasic().disable() not sure :)
+        http.httpBasic().disable().cors().and().csrf().and().exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler).and()
-                .authorizeRequests().antMatchers("/login/**")
+                .authorizeRequests().antMatchers("/registration**", "/js/**", "/css/**", "/img/**", "/webjars/**")
                 .permitAll().anyRequest().authenticated().and()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-                .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .formLogin().loginPage("/login").defaultSuccessUrl("/greeting").permitAll().and()
+                .logout().invalidateHttpSession(true).clearAuthentication(true).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+                /*.and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/;
+
+//        http.authorizeRequests().antMatchers("/registration**", "/js/**", "/css/**", "/img/**", "/webjars/**")
+//                .permitAll().anyRequest().authenticated().and()
+//                .formLogin().loginPage("/login").defaultSuccessUrl("/")/*("/greeting")*/.permitAll().and()
+//                .logout().invalidateHttpSession(true).clearAuthentication(true)
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout")
+//                .permitAll();
 
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
